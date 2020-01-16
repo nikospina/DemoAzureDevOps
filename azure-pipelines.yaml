@@ -1,5 +1,7 @@
 trigger:
-- '*'
+- MASTER
+- QA
+- DEV
 
 pool:
   vmImage: 'ubuntu-16.04'
@@ -39,11 +41,7 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
-
-- template: templates/build.yml
-  parameters:
-    buildConfiguration: 'Debug'
-
+    
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Release'
