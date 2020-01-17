@@ -47,14 +47,6 @@ jobs:
    - template: templates/build.yml
      parameters:
        buildConfiguration: 'Release'
-       
-- job: unitTest
-  dependsOn:
-  - build
-  condition: |
-      in(dependencies.build.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-
-  steps:
    - task: DotNetCoreCLI@2
      displayName: 'Install ReportGenerator'
      inputs:
@@ -83,3 +75,12 @@ jobs:
    - task: PublishBuildArtifacts@1
      displayName: 'Publish Artifact: drop'
      condition: succeeded()
+       
+- job: Deploy
+  dependsOn:
+  - build
+  condition: |
+      in(dependencies.build.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+
+  steps:
+    -script: 'echo "Deploymen process"'
