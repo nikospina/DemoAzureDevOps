@@ -82,3 +82,71 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
+      
+    - script: 'docker build -t tailspin .'
+      displayName: 'Build Container'
+      condition: succeeded()
+      
+    - script: 'docker tag tailspin $(DOCKERHUBUSER)/tailspin:$(Build.BuildNumber)'
+      displayName: 'Tag Container'
+      condition: succeeded()
+      
+    - script: 'docker login -u $(DOCKERHUBUSER) -p $(DOCKERHUBPASS)'
+      displayName: 'Docker Login'
+      condition: succeeded()
+      
+    - script: 'docker push $(DOCKERHUBUSER)/tailspin:$(Build.BuildNumber)'
+      displayName: 'Docker Push'
+      condition: succeeded()      
+
+- stage: 'Deploy'
+  displayName: 'Deploy application'
+  jobs: 
+  - job: 'Deploy'
+    displayName: 'Deploy AKS job'
+    
+    variables:
+      kubernetesServiceEndpoint: 'myKubernetesCluster'
+      
+    steps:    
+    - task: Kubernetes@1
+      displayName: Deploy in dev namespace
+      condition: |
+       and
+       (
+         succeeded(),
+         eq(variables['Build.SourceBranchName'], 'dev')
+       )
+      inputs:
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        command: apply
+        arguments: -f Deployment/deploy-service-ingress.yaml -n dev
+        
+    - task: Kubernetes@1
+      displayName: Deploy in qa namespace
+      condition: |
+       and
+       (
+         succeeded(),
+         eq(variables['Build.SourceBranchName'], 'qa')
+       )
+      inputs:
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        command: apply
+        arguments: -f Deployment/deploy-service-ingress.yaml -n qa
+        
+    - task: Kubernetes@1
+      displayName: Deploy in prd namespace
+      condition: |
+       and
+       (
+         succeeded(),
+         eq(variables['Build.SourceBranchName'], 'master')
+       )
+      inputs:
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        command: apply
+        arguments: -f Deployment/deploy-service-ingress.yaml -n prd
