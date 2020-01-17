@@ -51,7 +51,7 @@ metadata:
   name: ingress-tailspin
 spec:
   rules:
-  - host: demoazuredevops.com
+  - host: ambiente-qa.com
     http:
       paths:
       - backend:

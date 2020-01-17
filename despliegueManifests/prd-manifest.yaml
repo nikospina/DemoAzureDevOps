@@ -1,0 +1,59 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: tailspin-web
+  name: tailspin-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tailspin-web
+  template:
+    metadata:
+      labels:
+        app: tailspin-web
+    spec:
+      containers:
+      - image: darkaru/tailspin:20
+        imagePullPolicy: Always
+        name: tailspin-web
+        ports:
+        - containerPort: 80
+          protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tailspin-web
+  name: tailspin-web-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: tailspin-web
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+  
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  generation: 3
+  name: ingress-tailspin
+spec:
+  rules:
+  - host: ambiente-prd.com
+    http:
+      paths:
+      - backend:
+          serviceName: tailspin-web-service
+          servicePort: 80
