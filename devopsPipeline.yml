@@ -118,7 +118,7 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksDev
         command: apply
-        arguments: -f despliegueManifests/dev-manifest.yaml -n dev
+        arguments: -f deployManifests/dev-manifest.yaml -n dev
         
     - task: Kubernetes@1
       displayName: Deploy in qa namespace
@@ -132,7 +132,7 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksQa
         command: apply
-        arguments: -f despliegueManifests/qa-manifest.yaml -n qa
+        arguments: -f deployManifests/qa-manifest.yaml -n qa
         
     - task: Kubernetes@1
       displayName: Deploy in prd namespace
@@ -146,4 +146,4 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksPrd
         command: apply
-        arguments: -f despliegueManifests/prd-manifest.yaml -n prd
+        arguments: -f deployManifests/prd-manifest.yaml -n prd
