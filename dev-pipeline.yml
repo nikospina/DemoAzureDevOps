@@ -47,7 +47,7 @@ jobs:
   dependsOn:
   - inicializar
   condition: |
-   dependencies.inicializar.result, 'Succeeded', 'SucceededWithIssues', 'Skipped'
+   in(dependencies.inicializar.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
   steps:
    - template: templates/build.yml
      parameters:
