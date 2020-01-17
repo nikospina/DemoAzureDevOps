@@ -119,7 +119,7 @@ stages:
        )
       inputs:
         connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        kubernetesServiceEndpoint: myKubernetesCluster
         command: apply
         arguments: -f Deployment/deploy-service-ingress.yaml -n dev
         
@@ -133,7 +133,7 @@ stages:
        )
       inputs:
         connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        kubernetesServiceEndpoint: myKubernetesCluster
         command: apply
         arguments: -f Deployment/deploy-service-ingress.yaml -n qa
         
@@ -147,6 +147,6 @@ stages:
        )
       inputs:
         connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        kubernetesServiceEndpoint: myKubernetesCluster
         command: apply
         arguments: -f Deployment/deploy-service-ingress.yaml -n prd
