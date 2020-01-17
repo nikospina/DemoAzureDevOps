@@ -146,4 +146,4 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksPrd
         command: apply
-        arguments: -f deploy-service-ingress.yaml
+        arguments: -f deploy-service-ingress.yaml -n prd

@@ -1,10 +1,9 @@
-apiVersion: apps/v1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
     app: tailspin-web
   name: tailspin-web
-  namespace: prd
 spec:
   replicas: 1
   selector:
@@ -22,3 +21,39 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tailspin-web
+  name: tailspin-web-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: tailspin-web
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+  
+---
+
+apiVersion: v1
+kind: Ingress
+metadata:
+  generation: 3
+  name: ingress-tailspin
+spec:
+  rules:
+  - host: demoazuredevops.com
+    http:
+      paths:
+      - backend:
+          serviceName: tailspin-web-service
+          servicePort: 80
