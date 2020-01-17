@@ -15,7 +15,7 @@ variables:
 
 jobs:
 - job: inicializar
-  condition: false
+  condition: always()
   steps:
    - task: UseDotNet@2
      displayName: 'Install .net core 3.0 (preview)'
