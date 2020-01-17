@@ -51,7 +51,7 @@ metadata:
   namespace: default
 spec:
   rules:
-  - host: davitailspin.com
+  - host: demoazuredevops.com
     http:
       paths:
       - backend:
