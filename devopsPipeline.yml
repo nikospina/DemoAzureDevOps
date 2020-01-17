@@ -118,7 +118,7 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksDev
         command: apply
-        arguments: -f deploy-service-ingress.yaml -n dev
+        arguments: -f deploy-service-ingress.yaml
         
     - task: Kubernetes@1
       displayName: Deploy in qa namespace
@@ -132,7 +132,7 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksQa
         command: apply
-        arguments: -f deploy-service-ingress.yaml -n qa
+        arguments: -f deploy-service-ingress.yaml
         
     - task: Kubernetes@1
       displayName: Deploy in prd namespace
@@ -146,4 +146,4 @@ stages:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: aksPrd
         command: apply
-        arguments: -f deploy-service-ingress.yaml -n prd
+        arguments: -f deploy-service-ingress.yaml
