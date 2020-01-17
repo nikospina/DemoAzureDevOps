@@ -14,8 +14,8 @@ variables:
   dotnetSdkVersion: '3.0.x'
 
 jobs:
-- job: inicializar
-  condition: always()
+- job: build
+  condition: false
   steps:
    - task: UseDotNet@2
      displayName: 'Install .net core 3.0 (preview)'
@@ -43,25 +43,17 @@ jobs:
      inputs:
        command: 'restore'
        projects: '**/*.csproj'
-- job: build
-  dependsOn:
-  - inicializar
-  condition: |
-   in(dependencies.inicializar.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-  steps:
+
    - template: templates/build.yml
      parameters:
        buildConfiguration: 'Release'
+       
 - job: unitTest
   dependsOn:
-  - inicializar
   - build
   condition: |
-    and
-    (
-      in(dependencies.a.result, 'Succeeded', 'SucceededWithIssues', 'Skipped'),
-      in(dependencies.b.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-    )
+      in(dependencies.build.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+
   steps:
    - task: DotNetCoreCLI@2
      displayName: 'Install ReportGenerator'
