@@ -107,7 +107,7 @@ stages:
 
     steps:
     - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' dev-manifest.yaml"
-      workingDirectory: $(Agent.BuildDirectory)/deployManifests
+      workingDirectory: deployManifests
       displayName: 'Updating Deployment Version'
       condition: |
         and
@@ -131,7 +131,7 @@ stages:
         arguments: -f deployManifests/dev-manifest.yaml -n dev
         
     - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' qa-manifest.yaml"
-      workingDirectory: $(Agent.BuildDirectory)/deployManifests
+      workingDirectory: deployManifests
       displayName: 'Updating Deployment Version'
       condition: |
        and
@@ -155,7 +155,7 @@ stages:
         arguments: -f deployManifests/qa-manifest.yaml -n qa
 
     - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' prd-manifest.yaml"
-      workingDirectory: $(Agent.BuildDirectory)/deployManifests
+      workingDirectory: deployManifests
       displayName: Updating Deployment Version
       condition: |
         and
