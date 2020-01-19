@@ -53,6 +53,16 @@ stages:
     - template: templates/build.yml
       parameters:
         buildConfiguration: 'Release'
+        
+  - job: 'Build'
+    displayName: 'Unit Test & Coverage Job'
+    
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install .net core 3.0 (preview)'
+      inputs:
+        packageType: sdk
+        version: '3.0.101'
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'
@@ -78,6 +88,11 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+       
+  - job: 'Build & Push Docker'
+    displayName: 'Build & Publish Container'
+    
+    steps:  
     
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
