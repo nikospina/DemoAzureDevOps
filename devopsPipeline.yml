@@ -75,7 +75,7 @@ stages:
       displayName: 'Run unit tests - $(buildConfiguration)'
       inputs:
         command: 'test'
-        arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
     
@@ -91,6 +91,7 @@ stages:
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
+    condition: succeeded()
     
     steps:  
     
