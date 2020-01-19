@@ -89,7 +89,7 @@ stages:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
        
-  - job: 'Build&PushDocker'
+  - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
     
     steps:  
