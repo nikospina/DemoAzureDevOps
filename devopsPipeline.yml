@@ -54,6 +54,10 @@ stages:
       parameters:
         buildConfiguration: 'Release'
         
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()
+        
   - job: 'RunUnitTest'
     displayName: 'Unit Test & Coverage Job'
     
@@ -88,10 +92,6 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-        
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: drop'
-      condition: succeeded()
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
