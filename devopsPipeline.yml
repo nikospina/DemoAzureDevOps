@@ -88,17 +88,20 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-       
-  - job: 'BuildAndPushDocker'
-    displayName: 'Build & Publish Container Job'
-    condition: succeeded()
-    
-    steps:  
-    
+        
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
-      
+       
+  - job: 'BuildAndPushDocker'
+    displayName: 'Build & Publish Container Job'
+    condition: |
+      and
+      (succeeded(),
+      ne(variables['Build.Reason'], 'PullRequest')
+      )
+    
+    steps:        
     - script: 'docker build -t tailspin .'
       displayName: 'Build Container'
       condition: succeeded()
@@ -120,6 +123,11 @@ stages:
   jobs: 
   - job: 'Deploy'
     displayName: 'Deploy AKS Job'
+    condition: |
+      and(
+      succeeded(),
+      ne(variables['Build.Reason'], 'PullRequest')
+      )
 
     steps:
     - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' dev-manifest.yaml"
