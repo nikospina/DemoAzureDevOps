@@ -92,32 +92,15 @@ stages:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
         
-  - job: 'RunSonarScan'
-    displayName: 'Sonar Scan Job'
-    
-    steps:
-    - task: UseDotNet@2
-      displayName: 'Install .net core 2.0'
-      inputs:
-        packageType: sdk
-        version: '2.0.0'
-
-    - task: SonarQubePrepare@4
-      displayName: 'SonarQube Prepare'
-      inputs:
-        SonarQube: 'mysonarqube'
-        scannerMode: 'MSBuild'
-        projectKey: 'demoAzureDevOps'
-        projectName: 'demoAzureDevOps'
-        projectVersion: 
-    
-    - task: SonarQubeAnalyze@4
-      displayName: 'SonarQube Scan'
-    
-    - task: SonarQubePublish@4
-      displayName: 'SonarQube Publish Results'
-      inputs:
-        pollingTimeoutSec: '120'
+    - script: 'dotnet tool install --global dotnet-sonarscanner'
+      displayName: 'Install Sonarscanner Tool'
+      condition: succeeded()
+      
+    - script: |
+      ls -la
+      
+    - script: |
+      sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net  -Dsonar.login=d6bd6b039c1d52ee6291594e8b2b928642a51599
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
