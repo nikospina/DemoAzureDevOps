@@ -66,6 +66,21 @@ stages:
       inputs:
         packageType: sdk
         version: '3.0.101'
+        
+    - task: UseDotNet@2
+      displayName: 'Install .net core 2.0'
+      inputs:
+        packageType: sdk
+        version: '2.0.0'
+
+    - task: SonarQubePrepare@4
+      displayName: 'SonarQube Prepare'
+      inputs:
+        SonarQube: 'mysonarqube'
+        scannerMode: 'MSBuild'
+        projectKey: 'demoAzureDevOps'
+        projectName: 'demoAzureDevOps'
+        projectVersion:
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'
@@ -73,14 +88,6 @@ stages:
         command: custom
         custom: tool
         arguments: 'install --global dotnet-reportgenerator-globaltool'
-        
-    - script: 'dotnet tool install --global dotnet-sonarscanner'
-      displayName: 'Install Sonarscanner Tool'
-      condition: succeeded()
-      
-    - script: 'dotnet-sonarscanner begin k:"demoAzureDevOps" /d:sonar.host.url="http://mysonarqube.darkaru.net" d:sonar.login="d6bd6b039c1d52ee6291594e8b2b928642a51599" d:sonar.cs.opencover.reportsPaths="./Tailspin.SpaceGame.Web.Tests/TestResults/Coverage/coverage.opencover.xml" /d:sonar.exclusions="**/wwwroot/lib/**/*" \'
-      displayName: 'Sonar Login'
-      condition: succeeded()
     
     - task: DotNetCoreCLI@2
       displayName: 'Run unit tests - $(buildConfiguration)'
@@ -90,9 +97,13 @@ stages:
         publishTestResults: true
         projects: '**/*.Tests.csproj'
         
-    - script: 'dotnet-sonarscanner end /d:sonar.login="d6bd6b039c1d52ee6291594e8b2b928642a51599"'
-      displayName: 'Sonar Publish'
-      condition: succeeded()
+    - task: SonarQubeAnalyze@4
+      displayName: 'SonarQube Scan'
+      
+    - task: SonarQubePublish@4
+      displayName: 'SonarQube Publish Results'
+      inputs:
+        pollingTimeoutSec: '120'
     
     - script: |
         reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
@@ -103,7 +114,7 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-       
+
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
     condition: |
