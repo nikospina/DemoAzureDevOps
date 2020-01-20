@@ -73,6 +73,14 @@ stages:
         command: custom
         custom: tool
         arguments: 'install --global dotnet-reportgenerator-globaltool'
+        
+    - script: 'dotnet tool install --global dotnet-sonarscanner'
+      displayName: 'Install Sonarscanner Tool'
+      condition: succeeded()
+      
+    - script: 'dotnet-sonarscanner begin k:"demoAzureDevOps" /d:sonar.host.url="http://mysonarqube.darkaru.net" d:sonar.login="d6bd6b039c1d52ee6291594e8b2b928642a51599" d:sonar.cs.opencover.reportsPaths="./Tailspin.SpaceGame.Web.Tests/TestResults/Coverage/coverage.opencover.xml" /d:sonar.exclusions="**/wwwroot/lib/**/*" \'
+      displayName: 'Sonar Login'
+      condition: succeeded()
     
     - task: DotNetCoreCLI@2
       displayName: 'Run unit tests - $(buildConfiguration)'
@@ -81,6 +89,10 @@ stages:
         arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
+        
+    - script: 'dotnet-sonarscanner end /d:sonar.login="d6bd6b039c1d52ee6291594e8b2b928642a51599"'
+      displayName: 'Sonar Publish'
+      condition: succeeded()
     
     - script: |
         reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
@@ -91,16 +103,6 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-        
-    - script: 'dotnet tool install --global dotnet-sonarscanner'
-      displayName: 'Install Sonarscanner Tool'
-      condition: succeeded()
-      
-    - script: 'ls -la'
-      condition: succeeded()
-      
-    - script: 'sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net  -Dsonar.login=d6bd6b039c1d52ee6291594e8b2b928642a51599'
-      condition: succeeded()
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
