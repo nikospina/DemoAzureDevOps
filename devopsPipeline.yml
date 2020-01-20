@@ -96,11 +96,11 @@ stages:
       displayName: 'Install Sonarscanner Tool'
       condition: succeeded()
       
-    - script: |
-      ls -la
+    - script: 'ls -la'
+      condition: succeeded()
       
-    - script: |
-      sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net  -Dsonar.login=d6bd6b039c1d52ee6291594e8b2b928642a51599
+    - script: 'sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net  -Dsonar.login=d6bd6b039c1d52ee6291594e8b2b928642a51599'
+      condition: succeeded()
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
