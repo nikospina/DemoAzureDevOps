@@ -58,7 +58,7 @@ stages:
       condition: succeeded()
         
   - job: 'RunUnitTest'
-    displayName: 'Unit Test & Coverage Job'
+    displayName: 'Unit Test, Sonar Scan & Coverage Job'
     
     steps:
     - task: UseDotNet@2
@@ -66,6 +66,12 @@ stages:
       inputs:
         packageType: sdk
         version: '3.0.101'
+        
+    - task: UseDotNet@2
+      displayName: 'Install .net core 3.0 (preview)'
+      inputs:
+        packageType: sdk
+        version: '2.0.0'
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'

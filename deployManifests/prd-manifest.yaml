@@ -50,7 +50,7 @@ metadata:
   name: ingress-tailspin
 spec:
   rules:
-  - host: ambiente-prd.com
+  - host: ambiente-prd.darkaru.net
     http:
       paths:
       - backend:
