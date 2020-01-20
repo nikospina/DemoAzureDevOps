@@ -91,6 +91,23 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+        
+    - task: SonarQubePrepare@4
+      displayName: 'SonarQube Prepare'
+      inputs:
+        SonarQube: 'mysonarqube'
+        scannerMode: 'MSBuild'
+        projectKey: 'demoAzureDevOps'
+        projectName: 'demoAzureDevOps'
+        projectVersion: 
+    
+    - task: SonarQubeAnalyze@4
+      displayName: 'SonarQube Scan'
+    
+    - task: SonarQubePublish@4
+      displayName: 'SonarQube Publish Results'
+      inputs:
+        pollingTimeoutSec: '120'
        
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
