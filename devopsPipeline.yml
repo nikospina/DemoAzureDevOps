@@ -58,7 +58,7 @@ stages:
       condition: succeeded()
         
   - job: 'RunUnitTest'
-    displayName: 'Unit Test & Coverage Job'
+    displayName: 'Unit Test, Sonar Scan & Coverage Job'
     
     steps:
     - task: UseDotNet@2
@@ -66,6 +66,21 @@ stages:
       inputs:
         packageType: sdk
         version: '3.0.101'
+        
+    - task: UseDotNet@2
+      displayName: 'Install .net core 2.0'
+      inputs:
+        packageType: sdk
+        version: '2.0.0'
+
+    - task: SonarQubePrepare@4
+      displayName: 'SonarQube Prepare'
+      inputs:
+        SonarQube: 'mysonarqube'
+        scannerMode: 'MSBuild'
+        projectKey: 'demoAzureDevOps'
+        projectName: 'demoAzureDevOps'
+        projectVersion:
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'
@@ -81,6 +96,14 @@ stages:
         arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
+        
+    - task: SonarQubeAnalyze@4
+      displayName: 'SonarQube Scan'
+      
+    - task: SonarQubePublish@4
+      displayName: 'SonarQube Publish Results'
+      inputs:
+        pollingTimeoutSec: '120'
     
     - script: |
         reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
@@ -91,24 +114,7 @@ stages:
       inputs:
         codeCoverageTool: 'cobertura'
         summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-        
-    - task: SonarQubePrepare@4
-      displayName: 'SonarQube Prepare'
-      inputs:
-        SonarQube: 'mysonarqube'
-        scannerMode: 'MSBuild'
-        projectKey: 'demoAzureDevOps'
-        projectName: 'demoAzureDevOps'
-        projectVersion: 
-    
-    - task: SonarQubeAnalyze@4
-      displayName: 'SonarQube Scan'
-    
-    - task: SonarQubePublish@4
-      displayName: 'SonarQube Publish Results'
-      inputs:
-        pollingTimeoutSec: '120'
-       
+
   - job: 'BuildAndPushDocker'
     displayName: 'Build & Publish Container Job'
     condition: |
