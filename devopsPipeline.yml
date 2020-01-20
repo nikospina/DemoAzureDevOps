@@ -80,7 +80,7 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'demoAzureDevOps'
         projectName: 'demoAzureDevOps'
-        projectVersion:
+        projectVersion: '1.0'
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'
@@ -96,6 +96,9 @@ stages:
         arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
+        
+    - task: SonarQubeAnalyze@4
+      displayName: 'SonarQube Scan'
       
     - task: SonarQubePublish@4
       displayName: 'SonarQube Publish Results'
