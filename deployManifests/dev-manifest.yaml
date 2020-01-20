@@ -15,7 +15,7 @@ spec:
         app: tailspin-web
     spec:
       containers:
-      - image: darkaru/tailspin:BUILDVERSION
+      - image: darkaru/tailspin:$(Build.BuildNumber)
         imagePullPolicy: Always
         name: tailspin-web
         ports:
