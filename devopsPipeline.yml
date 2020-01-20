@@ -129,15 +129,6 @@ stages:
       )
 
     steps:
-    - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' dev-manifest.yaml"
-      workingDirectory: deployManifests
-      displayName: 'Updating Deployment Version'
-      condition: |
-        and
-        (
-          succeeded(),
-          eq(variables['Build.SourceBranchName'], 'dev')
-        )
 
     - task: Kubernetes@1
       displayName: 'Deploy in dev namespace'
