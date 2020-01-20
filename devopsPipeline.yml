@@ -3,7 +3,6 @@ trigger:
 - qa
 - master
 
-
 variables:
   buildConfiguration: 'Release'
   
@@ -130,7 +129,7 @@ stages:
       )
 
     steps:
-    - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' dev-manifest.yaml"
+    - script: "sed -i 's/BUILDVERSION/$(Build.BuildNumber)/' dev-manifest.yaml"
       workingDirectory: deployManifests
       displayName: 'Updating Deployment Version'
       condition: |
@@ -154,7 +153,7 @@ stages:
         command: apply
         arguments: -f deployManifests/dev-manifest.yaml -n dev
         
-    - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' qa-manifest.yaml"
+    - script: "sed -i 's/BUILDVERSION/$(Build.BuildNumber)/' qa-manifest.yaml"
       workingDirectory: deployManifests
       displayName: 'Updating Deployment Version'
       condition: |
@@ -178,7 +177,7 @@ stages:
         command: apply
         arguments: -f deployManifests/qa-manifest.yaml -n qa
 
-    - script: "sed 's/BUILDVERSION/$(Build.BuildNumber)/' prd-manifest.yaml"
+    - script: "sed -i 's/BUILDVERSION/$(Build.BuildNumber)/' prd-manifest.yaml"
       workingDirectory: deployManifests
       displayName: Updating Deployment Version
       condition: |
