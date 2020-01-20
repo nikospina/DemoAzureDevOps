@@ -3,7 +3,6 @@ trigger:
 - qa
 - master
 
-
 variables:
   buildConfiguration: 'Release'
   
