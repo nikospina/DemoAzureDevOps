@@ -21,12 +21,27 @@ stages:
       wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
       dotnetSdkVersion: '3.0.x'
       
-    steps:    
+    steps:
+    - task: SonarQubePrepare@4
+      displayName: 'SonarQube Prepare'
+      inputs:
+        SonarQube: 'mysonarqube'
+        scannerMode: 'MSBuild'
+        projectKey: 'demoAzureDevOps'
+        projectName: 'demoAzureDevOps'
+        projectVersion: '1.0'
+        
     - task: UseDotNet@2
       displayName: 'Install .net core 3.0 (preview)'
       inputs:
         packageType: sdk
         version: '3.0.101'
+        
+    - task: UseDotNet@2
+      displayName: 'Install .net core 2.0'
+      inputs:
+        packageType: sdk
+        version: '2.0.0'
     
     - task: Npm@1
       displayName: 'Run npm install'
@@ -56,31 +71,6 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
-        
-  - job: 'RunUnitTest'
-    displayName: 'Unit Test, Sonar Scan & Coverage Job'
-    
-    steps:
-    - task: UseDotNet@2
-      displayName: 'Install .net core 3.0 (preview)'
-      inputs:
-        packageType: sdk
-        version: '3.0.101'
-        
-    - task: UseDotNet@2
-      displayName: 'Install .net core 2.0'
-      inputs:
-        packageType: sdk
-        version: '2.0.0'
-
-    - task: SonarQubePrepare@4
-      displayName: 'SonarQube Prepare'
-      inputs:
-        SonarQube: 'mysonarqube'
-        scannerMode: 'MSBuild'
-        projectKey: 'demoAzureDevOps'
-        projectName: 'demoAzureDevOps'
-        projectVersion:
     
     - task: DotNetCoreCLI@2
       displayName: 'Install ReportGenerator'
@@ -93,12 +83,9 @@ stages:
       displayName: 'Run unit tests - $(buildConfiguration)'
       inputs:
         command: 'test'
-        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+        arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
-        
-    - task: SonarQubeAnalyze@4
-      displayName: 'SonarQube Scan'
       
     - task: SonarQubePublish@4
       displayName: 'SonarQube Publish Results'
