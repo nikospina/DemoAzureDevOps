@@ -31,7 +31,7 @@ stages:
         projectName: 'demoAzureDevOps'
         projectVersion: '1.0'
         
-    -script: 'curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip && ls -la'
+    - script: "curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip && ls -la"
         
     - task: UseDotNet@2
       displayName: 'Install .net core 3.0 (preview)'
