@@ -31,8 +31,7 @@ stages:
         projectName: 'demoAzureDevOps'
         projectVersion: '1.0'
         
-    - script: |
-      curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip
+    - script: "curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip"
       displayName: 'Install Sonar Exec'
     
     sonar-scanner-4.2.0.1873-linux
@@ -88,8 +87,7 @@ stages:
         publishTestResults: true
         projects: '**/*.Tests.csproj'
         
-    - script: | 
-      sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=$(Build.SourcesDirectory) -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac
+    - script: "sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=$(Build.SourcesDirectory) -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac"
       displayName: 'Sonar Scan'
       workingDirectory: sonar-scanner-4.2.0.1873-linux/bin    
     
