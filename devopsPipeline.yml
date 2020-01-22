@@ -84,9 +84,8 @@ stages:
         publishTestResults: true
         projects: '**/*.Tests.csproj'
         
-    - script: "pwd && echo $PATH && sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=$(Build.SourcesDirectory) -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac"
+    - script: "$PATH=$PATH:$(Build.SourcesDirectory)/sonar-scanner-4.2.0.1873-linux/bin && sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac"
       displayName: 'Sonar Scan'
-      workingDirectory: sonar-scanner-4.2.0.1873-linux/bin    
     
     - script: |
         reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
