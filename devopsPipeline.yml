@@ -22,14 +22,6 @@ stages:
       dotnetSdkVersion: '3.0.x'
       
     steps:
-    - task: SonarQubePrepare@4
-      displayName: 'SonarQube Prepare'
-      inputs:
-        SonarQube: 'mysonarqube'
-        scannerMode: 'MSBuild'
-        projectKey: 'demoAzureDevOps'
-        projectName: 'demoAzureDevOps'
-        projectVersion: '1.0'
         
     - script: "curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip"
       displayName: 'Install Sonar Exec'
