@@ -22,14 +22,6 @@ stages:
       dotnetSdkVersion: '3.0.x'
       
     steps:
-    - task: SonarQubePrepare@4
-      displayName: 'SonarQube Prepare'
-      inputs:
-        SonarQube: 'mysonarqube'
-        scannerMode: 'MSBuild'
-        projectKey: 'demoAzureDevOps'
-        projectName: 'demoAzureDevOps'
-        projectVersion: '1.0'
         
     - script: "curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip"
       displayName: 'Install Sonar Exec'
@@ -84,7 +76,7 @@ stages:
         publishTestResults: true
         projects: '**/*.Tests.csproj'
         
-    - script: "export PATH=$PATH:$(Build.SourcesDirectory)/sonar-scanner-4.2.0.1873-linux/bin && sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac -Dsonar.branch.name=master"
+    - script: "export PATH=$PATH:$(Build.SourcesDirectory)/sonar-scanner-4.2.0.1873-linux/bin && sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=. -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac"
       displayName: 'Sonar Scan'
     
     - script: |
@@ -205,3 +197,4 @@ stages:
         kubernetesServiceEndpoint: aksPrd
         command: apply
         arguments: -f deployManifests/prd-manifest.yaml -n prd
+        
