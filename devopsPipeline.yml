@@ -197,3 +197,4 @@ stages:
         kubernetesServiceEndpoint: aksPrd
         command: apply
         arguments: -f deployManifests/prd-manifest.yaml -n prd
+        
