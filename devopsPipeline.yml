@@ -31,19 +31,18 @@ stages:
         projectName: 'demoAzureDevOps'
         projectVersion: '1.0'
         
-    - script: "curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip && ls -la"
+    - script: |
+      curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip --output sonarInstall.zip && unzip sonarInstall.zip
+      displayName: 'Install Sonar Exec'
+    
+    sonar-scanner-4.2.0.1873-linux
+    $(Build.SourcesDirectory)
         
     - task: UseDotNet@2
       displayName: 'Install .net core 3.0 (preview)'
       inputs:
         packageType: sdk
         version: '3.0.101'
-        
-    - task: UseDotNet@2
-      displayName: 'Install .net core 2.0'
-      inputs:
-        packageType: sdk
-        version: '2.0.0'
     
     - task: Npm@1
       displayName: 'Run npm install'
@@ -88,11 +87,11 @@ stages:
         arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
         publishTestResults: true
         projects: '**/*.Tests.csproj'
-      
-    - task: SonarQubePublish@4
-      displayName: 'SonarQube Publish Results'
-      inputs:
-        pollingTimeoutSec: '120'
+        
+    - script: | 
+      sonar-scanner -Dsonar.projectKey=demoAzureDevOps -Dsonar.sources=$(Build.SourcesDirectory) -Dsonar.host.url=http://mysonarqube.darkaru.net -Dsonar.login=2eb5aadcd095faaacba1302e8a1c0d0c88a202ac
+      displayName: 'Sonar Scan'
+      workingDirectory: sonar-scanner-4.2.0.1873-linux/bin    
     
     - script: |
         reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
